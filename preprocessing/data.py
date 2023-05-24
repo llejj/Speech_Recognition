@@ -2,7 +2,6 @@ import os
 import numpy as np
 from scipy.io import wavfile as wav
 from python_speech_features import mfcc
-import subprocess
 
 # Define paths to TIMIT dataset directories
 timit_dir = '../TIMIT_WAV'
@@ -29,6 +28,7 @@ def extract_mfcc(audio_path):
     mfcc_features = mfcc(signal, rate, numcep=num_cepstral, winlen=frame_length, winstep=frame_step)
     return mfcc_features
 
+"""
 # Preprocess training data
 for speaker_dir in os.listdir(train_dir):
     speaker_path = os.path.join(train_dir, speaker_dir)
@@ -37,15 +37,16 @@ for speaker_dir in os.listdir(train_dir):
 
     for subdir, _, files in os.walk(speaker_path):
         for file in files:
-            if os.path.splitext(file)[1] == '.WAV': #file.endswith('.wav'):
+            if os.path.splitext(file)[1] == '.WAV':
                 audio_path = os.path.join(subdir, file)
                 mfcc_features = extract_mfcc(audio_path)
                 np.save(os.path.join(output_speaker_dir, file[:-4]), mfcc_features)
+                """
 
 # Preprocess testing data
 for subdir, _, files in os.walk(test_dir):
     for file in files:
-        if file.endswith('.wav'):
+        if os.path.splitext(file)[1] == '.WAV':
             audio_path = os.path.join(subdir, file)
             mfcc_features = extract_mfcc(audio_path)
             np.save(os.path.join(test_output_dir, file[:-4]), mfcc_features)
