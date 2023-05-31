@@ -1,18 +1,17 @@
 import os
 import joblib
 import numpy as np
-from hmmlearn.hmm import GaussianHMM
+from hmmlearn.hmm import GMMHMM
 
 train_dir = '../phoneme_data_mfcc/TRAIN'
 test_dir = '../phoneme_data_mfcc/TEST'
-output_dir = '../phoneme_models'
+output_dir = '../phoneme_models_gmm'
 os.makedirs(output_dir, exist_ok=True)
 
 
 for dir in os.listdir(train_dir):
     xtrain_dir = os.path.join(train_dir, dir)
     xtest_dir = os.path.join(test_dir, dir)
-    model = GaussianHMM(n_components=13)
 
     X_train = []
     train_lengths = []
@@ -32,7 +31,7 @@ for dir in os.listdir(train_dir):
     n_fits = 5
     np.random.seed(13)
     for idx in range(n_fits):
-        model = GaussianHMM(n_components=3, init_params='smc')
+        model = GMMHMM(n_components=3, n_mix = 3, init_params='smc')
         model.transmat_ = [[0,1,0],[0,0,1],[0,0,1]]
         model.fit(X_train, train_lengths)
         score = model.score(X_test)
@@ -45,7 +44,6 @@ for dir in os.listdir(train_dir):
     output_file = str(output_dir) + "/" + str(dir)
     joblib.dump(best_model, output_file)
 
-    """
     i = 0
     sum = 0
     for score_dir in os.listdir(test_dir):
@@ -59,4 +57,4 @@ for dir in os.listdir(train_dir):
         score = best_model.score(score_test)
         sum += score
         i += 1
-    print(sum/i)"""
+    print(sum/i)
